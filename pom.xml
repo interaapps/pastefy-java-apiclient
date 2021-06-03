@@ -26,11 +26,6 @@
             <artifactId>HTTP-Client</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>org.javawebstack</groupId>
-            <artifactId>ORM</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
 </project>
