@@ -8,6 +8,11 @@ import de.interaapps.pastefy.apiclient.models.response.CreatePasteResponse;
 import org.javawebstack.abstractdata.AbstractObject;
 
 import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
 
 public class Paste {
@@ -64,14 +69,29 @@ public class Paste {
         return response.success;
     }
 
+    public boolean create(String password) {
+        try {
+            encrypt(password);
+        } catch (InvalidAlgorithmParameterException | NoSuchPaddingException | IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return create();
+    }
+
+    public void encrypt(String password) throws InvalidAlgorithmParameterException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+        encrypted = true;
+        content = EncryptionHelper.encrypt(password, content);
+        title   = EncryptionHelper.encrypt(password, title);
+    }
+
     public boolean addFriend(String name){
         return api.post("/paste/"+id+"/friend", new AbstractObject().set("friend", name)).object(ActionResponse.class).success;
     }
 
     public boolean decrypt(String password) {
         try {
-            content = EncryptionHelper.decryptCryptoJS(password, content);
-            title   = EncryptionHelper.decryptCryptoJS(password, title);
+            content = EncryptionHelper.decrypt(password, content);
+            title   = EncryptionHelper.decrypt(password, title);
         } catch (BadPaddingException e) {
             return false;
         }

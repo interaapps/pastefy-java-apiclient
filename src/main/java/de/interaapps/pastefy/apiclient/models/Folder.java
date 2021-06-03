@@ -1,5 +1,6 @@
 package de.interaapps.pastefy.apiclient.models;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import de.interaapps.pastefy.apiclient.PastefyAPI;
 import de.interaapps.pastefy.apiclient.models.response.CreateFolderResponse;

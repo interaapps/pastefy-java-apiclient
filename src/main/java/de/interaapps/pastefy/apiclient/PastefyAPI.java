@@ -6,8 +6,10 @@ import de.interaapps.pastefy.apiclient.models.ApiKey;
 import de.interaapps.pastefy.apiclient.models.Notification;
 import de.interaapps.pastefy.apiclient.models.Paste;
 import de.interaapps.pastefy.apiclient.models.Folder;
+import de.interaapps.pastefy.apiclient.models.response.OverviewResponse;
 import de.interaapps.pastefy.apiclient.models.response.UserResponse;
 import org.javawebstack.httpclient.HTTPClient;
+import org.javawebstack.httpclient.HTTPRequest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +21,6 @@ public class PastefyAPI extends HTTPClient {
     public PastefyAPI(String apiKey, String server){
         setBaseUrl(server+"/api/v2");
         header("x-auth-key", apiKey);
-
     }
 
     public PastefyAPI(String apiKey){
@@ -66,6 +67,15 @@ public class PastefyAPI extends HTTPClient {
         return userResponse.isLoggedIn() ? userResponse : null;
     }
 
+    public OverviewResponse getOverview(int page){
+        OverviewResponse response = get("/user/overview").query("page", String.valueOf(page)).query("hide_children", "true").object(OverviewResponse.class);
+        return response;
+    }
+
+    public OverviewResponse getOverview(){
+        return getOverview(1);
+    }
+
     public boolean createApiKey(){
         return post("/user/keys").object(ActionResponse.class).success;
     }
@@ -89,5 +99,6 @@ public class PastefyAPI extends HTTPClient {
             return new ArrayList<>();
         }
     }
+
 
 }
