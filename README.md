@@ -9,15 +9,17 @@ class Test {
 
         // GETTING A PASTE
         Paste aCoolPaste = pastefyAPI.getPaste("6RfWSb9P");
-        if (aCoolPaste.exists()) {
+        if (aCoolPaste != null) {
             System.out.println(aCoolPaste.getContent());
-        }
-        // Decrypting encrypted pastes
-        if (aCoolPaste.isEncrypted()) {
-            if (aCoolPaste.decrypt("PASSWORD")) {
-                System.out.println(aCoolPaste.getContent());
+
+
+            if (aCoolPaste.isEncrypted()) {
+                if (aCoolPaste.decrypt("PASSWORD")) {
+                    System.out.println(aCoolPaste.getContent());
+                }
             }
         }
+        // Decrypting encrypted pastes
 
         // Creating a paste
         Paste paste = new Paste(pastefyAPI);
