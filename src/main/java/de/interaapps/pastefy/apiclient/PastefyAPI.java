@@ -100,7 +100,7 @@ public class PastefyAPI extends HTTPClient {
         }
     }
 
-    public String login(String iaAuthCode){
-        return get("/api/authentication/login").query("userkey", iaAuthCode).execute().header("Location").split("key=")[1];
+    public String loginWithOAuth2(String provider, String code){
+        return get("/api/v2/auth/oauth2/"+provider+"/callback").query("code", code).execute().header("Location").split("key=")[1];
     }
 }
