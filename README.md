@@ -1,6 +1,9 @@
 ## Pastefy Java APIClient
 
 ```java
+import de.interaapps.pastefy.apiclient.exceptions.CreationFailedException;
+import de.interaapps.pastefy.apiclient.exceptions.PasswordIncorrectException;
+
 class Test {
     public static void main(String[] args) {
         PastefyAPI pastefyAPI = new PastefyAPI("API-Key");
@@ -14,31 +17,34 @@ class Test {
 
 
             if (aCoolPaste.isEncrypted()) {
-                if (aCoolPaste.decrypt("PASSWORD")) {
-                    System.out.println(aCoolPaste.getContent());
+                try {
+                    aCoolPaste.decrypt("PASSWORD");
+                } catch (PasswordIncorrectException e) {
+                    System.out.println("error");
                 }
             }
         }
         // Decrypting encrypted pastes
 
         // Creating a paste
-        Paste paste = new Paste(pastefyAPI);
+        Paste paste = new Paste();
         paste.setTitle("A nice paste");
         paste.setContent("Hello there!");
 
-        if (paste.create()) {
+        try {
+            pastefyAPI.createPaste(paste);
             System.out.println("There is a new paste!: " + paste.getId());
 
             // Share paste to friend
-            if (paste.addFriend("HomerSimpson")) {
+            if (pastefyAPI.addFriendToPaste(paste, "HomerSimpson")) {
                 System.out.println("AMAZING!");
             }
-        } else {
+        } catch (CreationFailedException e) {
             System.out.println("Doh!");
         }
 
         // Deleting a paste
-        paste.delete();
+        pastefyAPI.deletePaste(paste);
         // or
         pastefyAPI.deletePaste("ID");
 
@@ -46,7 +52,7 @@ class Test {
         // Important: Use Folder
         Folder folder = pastefyAPI.getFolder("abcdefgh");
 
-        if (folder.exists()) {
+        if (folder != null) {
             System.out.println(folder.getName());
 
             // Go trough the folder
@@ -61,13 +67,13 @@ class Test {
         }
 
         // Create Folder 
-        Folder newFolder = new Folder(pastefyAPI);
+        Folder newFolder = new Folder();
         newFolder.setName("Yay");
-        newFolder.create();
+        pastefyAPI.createFolder(newFolder);
         System.out.println("A new folder appeared: " + newFolder.getId());
 
         // Deleting a folder
-        newFolder.delete();
+        pastefyAPI.deleteFolder(folder);
     }
 }
 ```

@@ -22,49 +22,6 @@ public class Folder {
     @SerializedName("created")
     private Timestamp createdAt;
 
-    transient private PastefyAPI api;
-
-    public Folder(PastefyAPI api){
-        this.api = api;
-    }
-
-    public boolean create(){
-        CreateFolderResponse response = api.post("/folder", this).object(CreateFolderResponse.class);
-        if (response.success) {
-            id = response.folder.id;
-            userId = response.folder.userId;
-            createdAt = response.folder.createdAt;
-
-            for (Paste paste : pastes) {
-                paste.setFolderId(id);
-                if (!paste.exists())
-                    paste.create();
-            }
-
-            for (Folder child : children) {
-                child.setParentId(id);
-                if (!child.exists())
-                    child.create();
-            }
-
-            exists = true;
-        }
-        return response.success;
-    }
-
-    public boolean delete(){
-        return api.deleteFolder(id);
-    }
-
-    public PastefyAPI getApi() {
-        return api;
-    }
-
-    public Folder setApi(PastefyAPI api) {
-        this.api = api;
-        return this;
-    }
-
     public String getName() {
         return name;
     }
@@ -100,6 +57,19 @@ public class Folder {
 
     public List<Paste> getPastes() {
         return pastes;
+    }
+
+
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public boolean exists(){
